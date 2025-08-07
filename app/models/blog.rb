@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Blog < ApplicationRecord
-  before_save :check_premium
   belongs_to :user
   has_many :likings, dependent: :destroy
   has_many :liking_users, class_name: 'User', source: :user, through: :likings
@@ -18,9 +17,5 @@ class Blog < ApplicationRecord
 
   def owned_by?(target_user)
     user == target_user
-  end
-
-  def check_premium
-    self.random_eyecatch = false unless user.premium?
   end
 end
