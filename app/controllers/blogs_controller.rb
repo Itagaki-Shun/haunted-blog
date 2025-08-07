@@ -4,7 +4,6 @@ class BlogsController < ApplicationController
   skip_before_action :authenticate_user!, only: %i[index show]
 
   before_action :set_blog, only: %i[show edit update destroy]
-  before_action :check_secret, only: %i[show]
 
   def index
     @blogs = Blog.search(params[:term]).published.default_order
@@ -48,15 +47,13 @@ class BlogsController < ApplicationController
     @blog = if action_name.in?(%w[edit update destroy])
               current_user.blogs.find(params[:id])
             else
-              Blog.find(params[:id])
+              Blog
+                .where('id = ? AND (secret = false OR user_id = ?)', params[:id], current_user)
+                .first!
             end
   end
 
   def blog_params
     params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
-  end
-
-  def check_secret
-    raise ActiveRecord::RecordNotFound if @blog.secret? && @blog.user != current_user
   end
 end
