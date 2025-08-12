@@ -10,7 +10,7 @@ class Blog < ApplicationRecord
   scope :published, -> { where('secret = FALSE') }
 
   scope :search, lambda { |term|
-    where('title LIKE :p OR content LIKE :p', p: "%#{sanitize_sql_like(term.to_s)}%")
+    where('title LIKE :placeholder OR content LIKE :placeholder', placeholder: "%#{sanitize_sql_like(term.to_s)}%")
   }
 
   scope :default_order, -> { order(id: :desc) }
