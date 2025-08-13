@@ -52,8 +52,8 @@ class BlogsController < ApplicationController
   end
 
   def blog_params
-    permitted_params = %i[title content secret]
-    permitted_params << :random_eyecatch if current_user.premium?
-    params.require(:blog).permit(*permitted_params)
+    permitted_keys = %i[title content secret]
+    permitted_keys << :random_eyecatch if current_user.premium?
+    params.require(:blog).permit(*permitted_keys)
   end
 end
